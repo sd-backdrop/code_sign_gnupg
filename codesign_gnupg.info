@@ -1,0 +1,6 @@
+name = GnuPG Codesign
+description = Verify modules with Gnu Privacy Guard
+package = Security
+backdrop = 1.x
+type = module
+dependencies[] = codesign
