@@ -1,5 +1,5 @@
-Codesign GnuPG
-======================
+Code Sign GnuPG
+===============
 
 TODO
 
@@ -38,7 +38,7 @@ Issues
 ------
 
 Bugs and Feature requests should be reported in the Issue Queue:
-https://github.com/backdrop-contrib/codesign_gnupg/issues.
+https://github.com/backdrop-contrib/code_sign_gnupg/issues.
 
 Current Maintainers
 -------------------
@@ -55,4 +55,5 @@ License
 
 This project is GPL v2 software. See the LICENSE.txt file in this directory for
 complete text.
+
 

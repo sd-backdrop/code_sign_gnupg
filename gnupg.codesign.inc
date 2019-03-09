@@ -24,7 +24,7 @@ define('GPGME_SIGSUM_CRL_TOO_OLD', 0x0200);  /* Available CRL is too old.  */
 define('GPGME_SIGSUM_BAD_POLICY', 0x0400);  /* A policy was not met.  */
 define('GPGME_SIGSUM_SYS_ERROR', 0x0800);  /* A system error occured.  */
 
-function codesign_gnupg_sign($profile, $data, $options = array()) {
+function code_sign_gnupg_sign($profile, $data, $options = array()) {
   $signature = array();
 
   $gpg = gnupg_init();
@@ -34,7 +34,7 @@ function codesign_gnupg_sign($profile, $data, $options = array()) {
   $signature = gnupg_sign($gpg, $data);
 
   if (!$signature) {
-    watchdog('codesign_gnupg', 'Could not generate signature, gnupg returned: @error', array('@error' => gnupg_geterror($gpg)), WATCHDOG_WARNING);
+    watchdog('code_sign_gnupg', 'Could not generate signature, gnupg returned: @error', array('@error' => gnupg_geterror($gpg)), WATCHDOG_WARNING);
     return NULL;
   }
 
@@ -52,9 +52,9 @@ function codesign_gnupg_sign($profile, $data, $options = array()) {
  * @return
  *   Needs work.
  */
-function codesign_gnupg_verify($data, $signature = NULL, $options = array()) {
+function code_sign_gnupg_verify($data, $signature = NULL, $options = array()) {
   $gpg = gnupg_init();
-  codesign_gnupg_import_keys($gpg);
+  code_sign_gnupg_import_keys($gpg);
   if (!$gpg) {
     watchdog('codesign', 'GnuPG unavailable.', array(), WATCHDOG_ERROR);
     return FALSE;
@@ -78,7 +78,7 @@ function codesign_gnupg_verify($data, $signature = NULL, $options = array()) {
       }
       else {
         $messages[] = t('Signature is invalid: @error', array(
-          '@error' => codesign_gnupg_summary_translation($result['summary']),
+          '@error' => code_sign_gnupg_summary_translation($result['summary']),
         ));
       }
     }
@@ -95,9 +95,9 @@ function codesign_gnupg_verify($data, $signature = NULL, $options = array()) {
   );
 }
 
-function codesign_gnupg_status() {
+function code_sign_gnupg_status() {
   $rows = array();
-  foreach (codesign_gnupg_get_public_keys() as $k) {
+  foreach (code_sign_gnupg_get_public_keys() as $k) {
     $rows[] = array(
       check_plain($k['name']),
       check_plain($k['key_info']['keyid']),
@@ -112,7 +112,7 @@ function codesign_gnupg_status() {
   );
 }
 
-function codesign_gnupg_get_public_keys() {
+function code_sign_gnupg_get_public_keys() {
   $valid_keys = &backdrop_static(__FUNCTION__, array());
 
   if (!$valid_keys) {
@@ -140,7 +140,7 @@ function codesign_gnupg_get_public_keys() {
  * @return
  *   An array of valid keys indexed by their fingerprint.
  */
-function codesign_gnupg_get_private_keys() {
+function code_sign_gnupg_get_private_keys() {
   $gpg = gnupg_init();
   gnupg_seterrormode($gpg, gnupg::ERROR_EXCEPTION);
 
@@ -177,7 +177,7 @@ function codesign_gnupg_get_private_keys() {
  *   FALSE on failure, the fingerprint of the last imported key on success, or
  *   NULL if the gnupg extension isn't loaded.
  */
-function codesign_gnupg_import_keys($gnupg) {
+function code_sign_gnupg_import_keys($gnupg) {
   $result = NULL;
   return $result;
   if (extension_loaded('gnupg')) {
@@ -190,7 +190,7 @@ function codesign_gnupg_import_keys($gnupg) {
   return ($result) ? $result['fingerprint'] : $result;
 }
 
-function codesign_gnupg_summary_translation($summary) {
+function code_sign_gnupg_summary_translation($summary) {
   $reasons = array();
 
   if ($summary & GPGME_SIGSUM_VALID) {
@@ -229,3 +229,4 @@ function codesign_gnupg_summary_translation($summary) {
 
   return implode(', ', $reasons);
 }
+

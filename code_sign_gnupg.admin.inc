@@ -1,15 +1,15 @@
 <?php
 
-function codesign_gnupg_admin_form($form, &$form_state) {
+function code_sign_gnupg_admin_form($form, &$form_state) {
   require_once __DIR__ . '/gnupg.codesign.inc';
-  $key_opts = codesign_gnupg_get_private_keys();
+  $key_opts = code_sign_gnupg_get_private_keys();
 
-  $form['#config'] = 'codesign_gnupg.settings';
+  $form['#config'] = 'code_sign_gnupg.settings';
   $form['default_signing_key'] = array(
     '#type' => 'select',
     '#title' => t('Default Signing Key'),
     '#options' => array_column($key_opts, 'name', 'profile_id'),
-    '#default_value' => config('codesign_gnupg.settings')->get('default_signing_key'),
+    '#default_value' => config('code_sign_gnupg.settings')->get('default_signing_key'),
   );
 
   return system_settings_form($form);
@@ -18,7 +18,7 @@ function codesign_gnupg_admin_form($form, &$form_state) {
 /**
  * Import a new public or private key.
  */
-function codesign_gnupg_admin_import_key_form($form, &$form_state) {
+function code_sign_gnupg_admin_import_key_form($form, &$form_state) {
   $form['import_key'] = array(
     '#type' => 'file',
     '#title' => t('Import Key'),
@@ -29,12 +29,12 @@ function codesign_gnupg_admin_import_key_form($form, &$form_state) {
     '#type' => 'submit',
     '#value' => 'Submit',
   );
-  $form['#submit'][] = 'codesign_gnupg_admin_import_key_form_submit';
+  $form['#submit'][] = 'code_sign_gnupg_admin_import_key_form_submit';
 
   return $form;
 }
 
-function codesign_gnupg_admin_import_key_form_submit(&$form, &$form_state) {
+function code_sign_gnupg_admin_import_key_form_submit(&$form, &$form_state) {
   // Get the file.
   $validators = array('file_validate_extensions' => array('gnupg gpg pgp'));
   $file = file_save_upload('import_key', $validators, 'temporary://');
@@ -52,3 +52,4 @@ function codesign_gnupg_admin_import_key_form_submit(&$form, &$form_state) {
     file_delete($file->fid);
   }
 }
+

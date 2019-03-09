@@ -3,21 +3,21 @@
 /**
  * Implements hook_requirements.
  */
-function codesign_gnupg_requirements($phase = NULL) {
+function code_sign_gnupg_requirements($phase = NULL) {
   $requirements = array();
 
   if ($phase == 'runtime') {
     $gnupg_loaded = extension_loaded('gnupg');
-    $requirements['codesign_gnupg'] = array(
+    $requirements['code_sign_gnupg'] = array(
       'title' => 'GnuPG extension',
       'value' => $gnupg_loaded ? t('GnuPG @version', array('@version' => phpversion('gnupg'))) : t('Not available'),
       'severity' => $gnupg_loaded ? REQUIREMENT_OK : REQUIREMENT_WARNING,
       'description' => t('The GnuPG extension can be used to verify the authenticity and integrity of loaded modules.')
     );
     if ($gnupg_loaded) {
-      require_once backdrop_get_path('module', 'codesign_gnupg') . '/gnupg.codesign.inc';
+      require_once backdrop_get_path('module', 'code_sign_gnupg') . '/gnupg.codesign.inc';
       $gpg = gnupg_init();
-      $fp = codesign_gnupg_import_keys($gpg);
+      $fp = code_sign_gnupg_import_keys($gpg);
       $keys = gnupg_keyinfo($gpg, $fp);
       if (!empty($keys)) {
         $requirements['gnupg_signing_key'] = array(
@@ -39,3 +39,4 @@ function codesign_gnupg_requirements($phase = NULL) {
 
   return $requirements;
 }
+
